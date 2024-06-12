@@ -68,7 +68,7 @@ func (m model) View() string {
 		detailView = lipgloss.NewStyle().
 			Width((terminalWidth-listViewWidth)/1).
 			Margin(1, 2).
-			Render("URL: ", i.url)
+			Render("URL: ", i.url, "\n", i.title)
 			// BorderStyle(lipgloss.RoundedBorder()).
 			
     } else {
