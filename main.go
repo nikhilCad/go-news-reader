@@ -54,12 +54,23 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
+	terminalWidth := m.list.Width()
+	listViewWidth := terminalWidth/2
+	m.list.SetWidth(listViewWidth)
+
 	listView := docStyle.Render(m.list.View())
     selectedItem := m.list.SelectedItem()
     var detailView string
     if selectedItem != nil {
         i := selectedItem.(item)
-        detailView = docStyle.Render(fmt.Sprintf("URL: %s", i.url))
+        // detailView = docStyle.Render(fmt.Sprintf("URL: %s", i.url))
+
+		detailView = lipgloss.NewStyle().
+			Width((terminalWidth-listViewWidth)/1).
+			Margin(1, 2).
+			Render("URL: ", i.url)
+			// BorderStyle(lipgloss.RoundedBorder()).
+			
     } else {
         detailView = docStyle.Render("No item selected")
     }
