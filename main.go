@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+    "os/exec"
+	"runtime"
 	
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -13,6 +15,22 @@ import (
 )
 
 var docStyle = lipgloss.NewStyle().Margin(1, 2)
+
+
+func openURL(url string) error {
+    var cmd *exec.Cmd
+    switch runtime.GOOS {
+    case "linux":
+        cmd = exec.Command("xdg-open", url)
+    case "windows":
+        cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
+    case "darwin":
+        cmd = exec.Command("open", url)
+    default:
+        return fmt.Errorf("unsupported platform")
+    }
+    return cmd.Start()
+}
 
 type item struct {
 	title, desc, url string
@@ -37,6 +55,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
         switch msg.String() {
         case "ctrl+c":
             return m, tea.Quit
+		case " ":
+            selectedItem := m.list.SelectedItem()
+            if selectedItem != nil {
+                i := selectedItem.(item)
+                err := openURL(i.url)
+                if err != nil {
+                    fmt.Println("Error opening browser:", err)
+                }
+            }
         }
     case tea.WindowSizeMsg:
         h, v := docStyle.GetFrameSize()
