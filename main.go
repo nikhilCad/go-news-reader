@@ -8,6 +8,7 @@ import (
 	
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/viewport"
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
@@ -31,6 +32,45 @@ func openURL(url string) error {
     }
     return cmd.Start()
 }
+
+type customDelegate struct {
+    list.DefaultDelegate
+}
+
+func newCustomDelegate() customDelegate {
+    return customDelegate{
+        DefaultDelegate: list.NewDefaultDelegate(),
+    }
+}
+
+func (d customDelegate) ShortHelp() []key.Binding {
+    return []key.Binding{
+        key.NewBinding(
+            key.WithKeys("ctrl+c"),
+            key.WithHelp("ctrl+c", "quit"),
+        ),
+        key.NewBinding(
+            key.WithKeys("space"),
+            key.WithHelp("space", "open URL"),
+        ),
+    }
+}
+
+func (d customDelegate) FullHelp() [][]key.Binding {
+    return [][]key.Binding{
+        {
+            key.NewBinding(
+                key.WithKeys("ctrl+c"),
+                key.WithHelp("ctrl+c", "quit"),
+            ),
+            key.NewBinding(
+                key.WithKeys("space"),
+                key.WithHelp("space", "open URL"),
+            ),
+        },
+    }
+}
+
 
 type item struct {
 	title, desc, url string
@@ -128,7 +168,7 @@ func main() {
 		}
 	}
 
-	m := model{list: list.New(items, list.NewDefaultDelegate(), 0, 0)}
+	m := model{list: list.New(items, newCustomDelegate(), 0, 0)}
 	m.list.Title = "News"
 	m.viewport = viewport.New(0, 0)  // Initial dimensions, will be set later
 
