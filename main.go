@@ -3,12 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
-    "os/exec"
-	"runtime"
 	
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/viewport"
-	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
@@ -16,60 +13,6 @@ import (
 )
 
 var docStyle = lipgloss.NewStyle().Margin(1, 2)
-
-
-func openURL(url string) error {
-    var cmd *exec.Cmd
-    switch runtime.GOOS {
-    case "linux":
-        cmd = exec.Command("xdg-open", url)
-    case "windows":
-        cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
-    case "darwin":
-        cmd = exec.Command("open", url)
-    default:
-        return fmt.Errorf("unsupported platform")
-    }
-    return cmd.Start()
-}
-
-type customDelegate struct {
-    list.DefaultDelegate
-}
-
-func newCustomDelegate() customDelegate {
-    return customDelegate{
-        DefaultDelegate: list.NewDefaultDelegate(),
-    }
-}
-
-func (d customDelegate) ShortHelp() []key.Binding {
-    return []key.Binding{
-        key.NewBinding(
-            key.WithKeys("ctrl+c"),
-            key.WithHelp("ctrl+c", "quit"),
-        ),
-        key.NewBinding(
-            key.WithKeys("space"),
-            key.WithHelp("space", "open URL"),
-        ),
-    }
-}
-
-func (d customDelegate) FullHelp() [][]key.Binding {
-    return [][]key.Binding{
-        {
-            key.NewBinding(
-                key.WithKeys("ctrl+c"),
-                key.WithHelp("ctrl+c", "quit"),
-            ),
-            key.NewBinding(
-                key.WithKeys("space"),
-                key.WithHelp("space", "open URL"),
-            ),
-        },
-    }
-}
 
 
 type item struct {
@@ -99,7 +42,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
             selectedItem := m.list.SelectedItem()
             if selectedItem != nil {
                 i := selectedItem.(item)
-                err := openURL(i.url)
+                err := OpenURL(i.url)
                 if err != nil {
                     fmt.Println("Error opening browser:", err)
                 }
