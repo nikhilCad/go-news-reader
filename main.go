@@ -13,10 +13,7 @@ import (
 
 func main() {
 
-	urls := []string{
-		"http://feeds.twit.tv/twit.xml",
-		"https://timesofindia.indiatimes.com/rssfeedstopstories.cms",
-	}
+	urls := ReadDatabase()
 
 	var fp = gofeed.NewParser()
 
