@@ -15,7 +15,7 @@ func main() {
 
 	urls := []string{
 		"http://feeds.twit.tv/twit.xml",
-		"https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+		"https://timesofindia.indiatimes.com/rssfeedstopstories.cms",
 	}
 
 	var fp = gofeed.NewParser()
@@ -32,7 +32,7 @@ func main() {
 
 			items = append(items, item{
 				title: parsedItem.Title,
-				desc: parsedItem.Description,
+				desc: "Sample Description see tui.go",
 				url:   parsedItem.Link,
 			})
 

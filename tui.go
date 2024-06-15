@@ -59,7 +59,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     selectedItem := m.list.SelectedItem()
     if selectedItem != nil {
         i := selectedItem.(item)
-        m.viewport.SetContent(fmt.Sprintf("URL: %s\n\nTitle: %s", i.url, i.title, i.desc))
+        m.viewport.SetContent(fmt.Sprintf("URL: %s\n\nTitle: %s \n\n %s", i.url, i.title, ParseUrl(i.url)))
     } else {
         m.viewport.SetContent("No item selected")
     }
