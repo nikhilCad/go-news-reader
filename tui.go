@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+    "github.com/charmbracelet/bubbles/textinput"
 )
 
 var docStyle = lipgloss.NewStyle().Margin(1, 2)
@@ -23,9 +24,16 @@ func (i item) FilterValue() string { return i.title }
 type model struct {
 	list list.Model
 	viewport viewport.Model
+    textInput  textinput.Model
+	showInput  bool
 }
 
 func (m model) Init() tea.Cmd {
+    // m.textInput = textinput.New()
+	// m.textInput.Placeholder = "Type here"
+	// m.textInput.Focus()
+	// m.textInput.CharLimit = 156
+	// m.textInput.Width = 20
 	return nil
 }
 
@@ -35,6 +43,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
         switch msg.String() {
         case "ctrl+c":
             return m, tea.Quit
+        case "a":
+            m.showInput = !m.showInput
 		case " ":
             selectedItem := m.list.SelectedItem()
             if selectedItem != nil {
@@ -45,11 +55,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
                 }
             }
         }
+
     case tea.WindowSizeMsg:
         h, v := docStyle.GetFrameSize()
         m.list.SetSize(msg.Width-h, msg.Height-v)
         m.viewport.Width = msg.Width - h - msg.Width/2
         m.viewport.Height = msg.Height - v
+    }
+
+    if m.showInput {
+        var cmd tea.Cmd
+        m.textInput, cmd = m.textInput.Update(msg)
+        return m, cmd
     }
 
     var cmd tea.Cmd
@@ -70,12 +87,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 
 func (m model) View() string {
+
 	terminalWidth := m.list.Width()
 	listViewWidth := terminalWidth/2
 	m.list.SetWidth(listViewWidth)
 
 	listView := docStyle.Render(m.list.View())
     detailView := docStyle.Render(m.viewport.View())
+
+    if m.showInput {
+		// return m.textInput.View()
+        return lipgloss.JoinHorizontal(lipgloss.Top, listView, m.textInput.View())
+	}
 
     return lipgloss.JoinHorizontal(lipgloss.Top, listView, detailView)
 }

@@ -26,6 +26,10 @@ func (d customDelegate) ShortHelp() []key.Binding {
             key.WithKeys("space"),
             key.WithHelp("space", "open URL"),
         ),
+        key.NewBinding(
+            key.WithKeys("a"),
+            key.WithHelp("a", "add feed"),
+        ),
     }
 }
 
@@ -39,6 +43,10 @@ func (d customDelegate) FullHelp() [][]key.Binding {
             key.NewBinding(
                 key.WithKeys("space"),
                 key.WithHelp("space", "open URL"),
+            ),
+            key.NewBinding(
+                key.WithKeys("a"),
+                key.WithHelp("a", "add feed"),
             ),
         },
     }
