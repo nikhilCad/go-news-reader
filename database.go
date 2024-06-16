@@ -15,11 +15,13 @@ func CreateDatabae() {
 	database.Close()
 }
 
+// https://www.youtube.com/feeds/videos.xml?channel_id=UC4rqhyiTs7XyuODcECvuiiQ
+// https://timesofindia.indiatimes.com/rssfeedstopstories.cms
 func UpdateDatabase() {
 	database, _ := sql.Open("sqlite3", "./feeds.db")
 	
 	statement, _ := database.Prepare("INSERT INTO feeds (url) VALUES (?)")
-	statement.Exec("https://timesofindia.indiatimes.com/rssfeedstopstories.cms")
+	statement.Exec("https://www.youtube.com/feeds/videos.xml?channel_id=UC4rqhyiTs7XyuODcECvuiiQ")
 	
 	database.Close()
 }
@@ -39,3 +41,7 @@ func ReadDatabase() []string {
 
 	return urls
 }
+
+// func main(){
+// 	UpdateDatabase()
+// }

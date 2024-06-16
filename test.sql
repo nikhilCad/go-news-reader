@@ -1,0 +1,1 @@
+INSERT INTO feeds (url) VALUES ("https://rss.nytimes.com/services/xml/rss/nyt/US.xml");

@@ -23,13 +23,11 @@ func main() {
 
 		var feedParsed, _ = fp.ParseURL(url)
 
-		fmt.Println(feedParsed.Title)
-
 		for _, parsedItem := range feedParsed.Items {
 
 			items = append(items, item{
 				title: parsedItem.Title,
-				desc: "Sample Description see tui.go",
+				desc:  parsedItem.Description,
 				url:   parsedItem.Link,
 			})
 
