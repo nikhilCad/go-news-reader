@@ -8,6 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
     "github.com/charmbracelet/bubbles/textinput"
+    "github.com/charmbracelet/glamour"
 )
 
 var docStyle = lipgloss.NewStyle().Margin(1, 2)
@@ -34,6 +35,7 @@ func (m model) Init() tea.Cmd {
 	// m.textInput.Focus()
 	// m.textInput.CharLimit = 156
 	// m.textInput.Width = 20
+    // m.viewport.KeyMap = ViewPortKeyMap()
 	return nil
 }
 
@@ -61,6 +63,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
         m.list.SetSize(msg.Width-h, msg.Height-v)
         m.viewport.Width = msg.Width - h - msg.Width/2
         m.viewport.Height = msg.Height - v
+        m.viewport.Style = lipgloss.NewStyle().
+                            BorderStyle(lipgloss.RoundedBorder()).
+                            BorderForeground(lipgloss.Color("62"))
     }
 
     if m.showInput {
@@ -75,8 +80,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     // Update viewport content based on the selected item
     selectedItem := m.list.SelectedItem()
     if selectedItem != nil {
+
         i := selectedItem.(item)
-        m.viewport.SetContent(fmt.Sprintf("URL: %s\n\nTitle: %s \n\n %s", i.url, i.title, ParseUrl(i.url)))
+
+        renderer, _ := glamour.NewTermRenderer(
+            glamour.WithAutoStyle(),
+            glamour.WithWordWrap(m.viewport.Width),
+        )
+    
+        str, _ := renderer.Render(fmt.Sprintf("## URL: %s\n\n# Title: %s \n\n%s", i.url, i.title, ParseUrl(i.url)))
+
+        m.viewport.SetContent(str)
+        m.viewport.GotoTop()
     } else {
         m.viewport.SetContent("No item selected")
     }
