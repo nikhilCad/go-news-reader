@@ -84,7 +84,7 @@ func createFeed(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, newFeed)
 }
 
-func main_() {
+func __main() {
 	router := gin.Default()
 	router.GET("/feeds", getFeeds)
 	router.POST("/feeds", createFeed)
