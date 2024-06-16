@@ -61,8 +61,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     case tea.WindowSizeMsg:
         h, v := docStyle.GetFrameSize()
         m.list.SetSize(msg.Width-h, msg.Height-v)
-        m.viewport.Width = msg.Width - h - msg.Width/2
-        m.viewport.Height = msg.Height - v
+        m.viewport.Width = msg.Width/2 - v
+        m.viewport.Height = msg.Height - h
         m.viewport.Style = lipgloss.NewStyle().
                             BorderStyle(lipgloss.RoundedBorder()).
                             BorderForeground(lipgloss.Color("62"))
@@ -91,6 +91,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
         str, _ := renderer.Render(fmt.Sprintf("## URL: %s\n\n# Title: %s \n\n%s", i.url, i.title, ParseUrl(i.url)))
 
         m.viewport.SetContent(str)
+        // TODO: Remove this, scroll focus
         m.viewport.GotoTop()
     } else {
         m.viewport.SetContent("No item selected")
